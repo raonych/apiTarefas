@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('descricao');
             $table->boolean('concluido')->default(false);
             $table->date('dataLimite');
+            $table->string('userId');
         });
     }
 

@@ -9,19 +9,34 @@ use Illuminate\Support\Facades\Validator;
 
 class TarefasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(int $id)// id do usuario
+
+    public function index(Request $request)
     {
-        $tarefas = Tarefas::Quer()
-        ->where('userId', '=', $id)
-        ->get();
+        try{
+            $userId = $request->userId;
+            $tarefas = Tarefas::where('userId', $userId)->get();
+
+            if($tarefas.count() == 0){
+                return response()->json([
+                    'mensagem' => 'o usuário não possui nenhuma tarefa',
+                    'tarefas' => $tarefas
+                ], 200);
+            }
+
+            return response()->json([
+            'mensagem' => 'retornando tarefas do usuário',
+            'tarefas' => $tarefas
+            ],200);
+
+        }catch(Exception $error){
+            return response()->json([
+                'mensagem' => $error->getMessage()
+            ],500); 
+        } 
+        
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {   
 
@@ -55,25 +70,34 @@ class TarefasController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Tarefas $tarefas)
+    public function show(Request $request, int $id)
     {
-        //
+        try{
+            $tarefa = Tarefas::find($id);
+            if(!$tarefa){
+                return response()->json([
+                    'mensagem' => 'Tarefa não encontrada'
+                ], Response::HTTP_NO_CONTENT);
+            }
+
+            return response()->json([
+                'mensagem' => 'retornando tarefa',
+                'tarefa' => $tarefa
+            ], 200);
+            
+        }catch(Exception $error){
+            return response()->json([
+                'mensagem' => $error->getMessage()
+            ],500);
+        }
+        
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Tarefas $tarefas)
     {
-        //
+        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Tarefas $tarefas)
     {
         //
