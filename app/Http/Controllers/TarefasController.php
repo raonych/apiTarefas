@@ -93,13 +93,74 @@ class TarefasController extends Controller
         
     }
 
-    public function update(Request $request, Tarefas $tarefas)
+    public function update(Request $request, int $id)
     {
+         try{
+
+            $tarefa =  $request->all();
+
+            $validatedData = Validator::make($tarefa, [
+                'nome' => 'required',
+                'descricao' => 'required',
+                'dataLimite' => 'required',
+                'userId' => 'required'
+            ]);
+
+            if ($validatedData->fails()) {
+            return response()->json([
+                'mensagem' => 'Registros faltantes',
+                'erros' => $validatedData->errors()
+            ], Response::HTTP_NO_CONTENT);
+            }
+
+            $tarefaAtt = Tarefas::find($id)
+
+            if(!$tarefaAtt){
+                return response()->json([
+                    'mensagem' => 'Tarefa não encontrada'
+                ], Response::HTTP_NO_CONTENT);
+            }
         
+
+            $tarefaAtt->update($tarefa);
+            
+
+            return response()->json([
+                'mensagem' => 'retornando tarefa',
+                'tarefa' => $tarefa
+            ], 200);
+            
+        }catch(Exception $error){
+            return response()->json([
+                'mensagem' => $error->getMessage()
+            ],500);
+        }
     }
 
-    public function destroy(Tarefas $tarefas)
+    public function destroy(int $id)
     {
-        //
+        try{
+
+            $tarefa = Tarefas::find($id)
+            
+            if(!$tarefa){
+                return response()->json([
+                    'mensagem' => 'Tarefa não encontrada'
+                ], Response::HTTP_NO_CONTENT);
+            }
+        
+
+            $tarefa->destroy($tarefa);
+            
+
+            return response()->json([
+                'mensagem' => 'tarefa deletada com suceso'
+            ], 200);
+            
+        }catch(Exception $error){
+            return response()->json([
+                'mensagem' => $error->getMessage()
+            ],500);
+        }
     }
 }
