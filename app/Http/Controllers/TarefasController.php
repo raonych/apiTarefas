@@ -14,7 +14,7 @@ class TarefasController extends Controller
     {
         try{
             $userId = $request->userId;
-            $tarefas = Tarefas::where('userId', $userId)->get();
+            $tarefas = Tarefas::all();
 
             if($tarefas.count() == 0){
                 return response()->json([
@@ -113,7 +113,7 @@ class TarefasController extends Controller
             ], Response::HTTP_NO_CONTENT);
             }
 
-            $tarefaAtt = Tarefas::find($id)
+            $tarefaAtt = Tarefas::find($id);
 
             if(!$tarefaAtt){
                 return response()->json([
@@ -141,7 +141,7 @@ class TarefasController extends Controller
     {
         try{
 
-            $tarefa = Tarefas::find($id)
+            $tarefa = Tarefas::find($id);
             
             if(!$tarefa){
                 return response()->json([
