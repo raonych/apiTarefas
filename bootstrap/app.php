@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\FirebaseMiddleware;
+use App\Http\Middleware\VerifyUid;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
             $middleware->append(HandleCors::class);
         $middleware->alias([
-            'firebase.auth' => FirebaseMiddleware::class,
+            'firebase.auth' => VerifyUid::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

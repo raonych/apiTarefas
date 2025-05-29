@@ -13,10 +13,11 @@ class TarefasController extends Controller
     public function index(Request $request)
     {
         try{
-            $userId = $request->userId;
-            $tarefas = Tarefas::all();
+            $userId = $request->header('X-User-Id');
 
-            if($tarefas.count() == 0){
+            $tarefas = Tarefas::where('userId', $userId)->get();
+
+            if(count($tarefas) == 0){
                 return response()->json([
                     'mensagem' => 'o usuário não possui nenhuma tarefa',
                     'tarefas' => $tarefas
@@ -28,45 +29,45 @@ class TarefasController extends Controller
             'tarefas' => $tarefas
             ],200);
 
-        }catch(Exception $error){
-            return response()->json([
-                'mensagem' => $error->getMessage()
-            ],500); 
-        } 
+        }catch (\Exception $error) {
+        return response()->json([
+            'mensagem' => $error->getMessage()
+        ], 500);
+    } 
         
     }
 
 
     public function store(Request $request)
     {   
-
         $tarefa = $request->all();
+        $tarefa['userId'] = $request->header('X-User-Id');
+
         $validatedData = Validator::make($tarefa, [
-            'nome' => 'required',
+            'titulo' => 'required',
             'descricao' => 'required',
             'dataLimite' => 'required',
             'userId' => 'required'
         ]);
-
-        if($validatedData->fails()) {
+        
+        if ($validatedData->fails()) {
             return response()->json([
-                'mensagem' => 'Registros Faltantes',
-                'erros'=> $validatedData->erros()
-            ], Response::HTTP_NO_CONTENT);
-        } 
+                'mensagem' => 'Registros faltantes',
+                'erros' => $validatedData->errors()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         $tarefaCriada = Tarefas::create($tarefa);
 
-
-        if($tarefaCriada){
+        if ($tarefaCriada) {
             return response()->json([
                 'mensagem' => 'Tarefa criada com sucesso',
                 'tarefa' => $tarefaCriada
-            ], Response::HTTP_CREATED);
-        }else{
+            ], Response::HTTP_CREATED); 
+        } else {
             return response()->json([
                 'mensagem' => 'Erro ao criar tarefa'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR); 
         }
     }
 
@@ -98,9 +99,10 @@ class TarefasController extends Controller
          try{
 
             $tarefa =  $request->all();
-
+            $tarefa['userId'] = $request->header('X-User-Id');
+            
             $validatedData = Validator::make($tarefa, [
-                'nome' => 'required',
+                'titulo' => 'required',
                 'descricao' => 'required',
                 'dataLimite' => 'required',
                 'userId' => 'required'
