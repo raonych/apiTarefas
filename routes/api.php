@@ -14,5 +14,6 @@ Route::middleware(['firebase.auth'])->group(function () {
     Route::post('/tarefas', [TarefasController::class,'store']);
     Route::get('/tarefas/{id}', [TarefasController::class,'show']);
     Route::put('/tarefas/{id}', [TarefasController::class,'update']);
-    Route::get('/tarefas/{id}', [TarefasController::class,'destroy']);
+    Route::delete('/tarefas/{id}', [TarefasController::class,'destroy']);
+    Route::patch('/tarefas/{id}/toggle', [TarefasController::class, 'toggle']);
 });

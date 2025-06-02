@@ -78,7 +78,7 @@ class TarefasController extends Controller
             if(!$tarefa){
                 return response()->json([
                     'mensagem' => 'Tarefa não encontrada'
-                ], Response::HTTP_NO_CONTENT);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             return response()->json([
@@ -112,7 +112,7 @@ class TarefasController extends Controller
             return response()->json([
                 'mensagem' => 'Registros faltantes',
                 'erros' => $validatedData->errors()
-            ], Response::HTTP_NO_CONTENT);
+            ], Response::HTTP_NOT_FOUND);
             }
 
             $tarefaAtt = Tarefas::find($id);
@@ -120,7 +120,7 @@ class TarefasController extends Controller
             if(!$tarefaAtt){
                 return response()->json([
                     'mensagem' => 'Tarefa não encontrada'
-                ], Response::HTTP_NO_CONTENT);
+                ], Response::HTTP_NOT_FOUND);
             }
         
 
@@ -148,7 +148,7 @@ class TarefasController extends Controller
             if(!$tarefa){
                 return response()->json([
                     'mensagem' => 'Tarefa não encontrada'
-                ], Response::HTTP_NO_CONTENT);
+                ], Response::HTTP_NOT_FOUND);
             }
         
 
@@ -156,7 +156,34 @@ class TarefasController extends Controller
             
 
             return response()->json([
-                'mensagem' => 'tarefa deletada com suceso'
+                'mensagem' => 'tarefa deletada com sucesso'
+            ], 200);
+            
+        }catch(Exception $error){
+            return response()->json([
+                'mensagem' => $error->getMessage()
+            ],500);
+        }
+    }
+
+    public function toggle(int $id)
+    {
+        try{
+
+            $tarefa = Tarefas::find($id);
+            
+            if(!$tarefa){
+                return response()->json([
+                    'mensagem' => 'Tarefa não encontrada'
+                ], Response::HTTP_NOT_FOUND);
+            }
+        
+            $tarefa->concluido = !$tarefa->concluido;
+            
+            $tarefa->save();
+
+            return response()->json([
+                'mensagem' => 'tarefa atualizada com sucesso'
             ], 200);
             
         }catch(Exception $error){
