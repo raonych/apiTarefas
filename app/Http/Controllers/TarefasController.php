@@ -152,7 +152,7 @@ class TarefasController extends Controller
             }
         
 
-            $tarefa->destroy($tarefa);
+            $tarefa->delete($tarefa);
             
 
             return response()->json([
